@@ -72,7 +72,7 @@ You may find [crontab.guru](https://crontab.guru/) a helpful resource for buildi
 The CSV file containing all speedtest results is stored at `/data/speedtest.csv` inside the container. Mount a volume to persist data:
 
 ```bash
--v /path/to/data:/data
+--volume /path/to/data:/data
 ```
 
 ## Available Images
@@ -89,7 +89,7 @@ Available tags:
 ## Building from Source
 
 ```bash
-docker build -t speedtest .
+docker build --tag speedtest .
 ```
 
 ## Architecture
@@ -105,10 +105,10 @@ docker build -t speedtest .
 
 ```bash
 # Docker Compose
-docker-compose logs -f
+docker-compose logs --follow
 
 # Docker
-docker logs -f speedtest
+docker logs --follow speedtest
 ```
 
 ## License
