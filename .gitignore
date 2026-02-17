@@ -1,0 +1,10 @@
+# Data directory (contains speedtest results)
+data/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
