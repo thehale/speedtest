@@ -8,6 +8,8 @@ A lightweight Docker container (~35MB) that runs [Ookla Speedtest](https://www.s
 [![Joseph Hale's software engineering blog](https://jhale.dev/badges/website.svg)](https://jhale.dev)
 [![](https://jhale.dev/badges/follow.svg)](https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=thehale)
 
+![Screenshot of the speedtest historical results page showing the average metrics in cards across the top and the chart of download, upload, and ping across the bottom](docs/speedtest-screenshot.png)
+
 
 ## Quick Start
 
@@ -26,7 +28,6 @@ services:
       - ./data:/data
     environment:
       - CRON_SCHEDULE=0 */5 * * *
-      - HOME=/tmp
     restart: unless-stopped
 ```
 
@@ -47,7 +48,6 @@ docker run \
   --publish 8080:8080 \
   --volume $(pwd)/data:/data \
   --env CRON_SCHEDULE="0 */5 * * *" \
-  --env HOME=/tmp \
   --restart unless-stopped \
   thehale/speedtest:latest
 ```
