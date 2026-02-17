@@ -4,10 +4,12 @@ services:
   speedtest:
     build: .
     container_name: speedtest
+    user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "${HTTP_PORT:-8080}:8080"
     volumes:
       - ./data:/data
     environment:
       - CRON_SCHEDULE=${CRON_SCHEDULE:-*/30 * * * *}
+      - HOME=/tmp
     restart: unless-stopped

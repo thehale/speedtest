@@ -35,6 +35,22 @@ docker run -d \
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
 | `CRON_SCHEDULE` | `*/30 * * * *` | Cron expression for test frequency |
+| `UID` | `1000` | User ID to run as (match host user) |
+| `GID` | `1000` | Group ID to run as (match host user) |
+
+### Running as Current User
+
+To run the container with your current user's permissions:
+
+```bash
+# Option 1: Set in .env file
+echo "UID=$(id -u)" >> .env
+echo "GID=$(id -g)" >> .env
+docker-compose up -d
+
+# Option 2: Pass directly on command line
+UID=$(id -u) GID=$(id -g) docker-compose up -d
+```
 
 ### Cron Schedule Examples
 
