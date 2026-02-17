@@ -13,7 +13,14 @@ if [ ! -f "$DATA_FILE" ] || [ ! -s "$DATA_FILE" ]; then
     <title>Speedtest Results</title>
     <meta http-equiv="refresh" content="60">
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        :root { color-scheme: light dark; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+            background: light-dark(#f5f5f5, #1a1a1a);
+            color: light-dark(#333, #e0e0e0);
+        }
         .container { max-width: 800px; margin: 0 auto; }
     </style>
 </head>
@@ -72,13 +79,14 @@ cat > "$HTML_FILE" << EOF
     <meta http-equiv="refresh" content="60">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-        h1 { color: #333; }
+        :root { color-scheme: light dark; }
+        body { font-family: Arial, sans-serif; margin: 20px; background: light-dark(#f5f5f5, #1a1a1a); color: light-dark(#333, #e0e0e0); }
+        .container { max-width: 1200px; margin: 0 auto; background: light-dark(white, #2a2a2a); padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px light-dark(rgba(0,0,0,0.1), rgba(0,0,0,0.3)); }
+        h1 { color: light-dark(#333, #e0e0e0); }
         .stats { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-box { background: #f0f0f0; padding: 15px; border-radius: 5px; flex: 1; min-width: 150px; }
-        .stat-label { font-size: 12px; color: #666; }
-        .stat-value { font-size: 24px; font-weight: bold; color: #333; }
+        .stat-box { background: light-dark(#f0f0f0, #3a3a3a); padding: 15px; border-radius: 5px; flex: 1; min-width: 150px; }
+        .stat-label { font-size: 12px; color: light-dark(#666, #999); }
+        .stat-value { font-size: 24px; font-weight: bold; color: light-dark(#333, #f0f0f0); }
         #chart { width: 100%; height: 500px; }
     </style>
 </head>
@@ -146,17 +154,31 @@ $data_js
             marker: { size: 6 }
         };
 
+        // Detect dark mode preference
+        const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
         const layout = {
-            title: 'Internet Speed Over Time',
-            xaxis: { title: 'Time' },
-            yaxis: { title: 'Speed (Mbps)', side: 'left' },
-            yaxis2: { title: 'Ping (ms)', overlaying: 'y', side: 'right' },
+            title: {
+                text: 'Internet Speed Over Time',
+                font: { color: isDark ? '#e0e0e0' : '#333' }
+            },
+            paper_bgcolor: isDark ? '#2a2a2a' : 'white',
+            plot_bgcolor: isDark ? '#2a2a2a' : 'white',
+            font: { color: isDark ? '#e0e0e0' : '#333' },
+            xaxis: { title: { text: 'Time', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' } },
+            yaxis: { title: { text: 'Speed (Mbps)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, side: 'left' },
+            yaxis2: { title: { text: 'Ping (ms)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, overlaying: 'y', side: 'right' },
             hovermode: 'x unified',
             showlegend: true,
-            legend: { x: 0, y: 1.1, orientation: 'h' }
+            legend: { x: 0, y: 1.1, orientation: 'h', font: { color: isDark ? '#e0e0e0' : '#333' } }
         };
 
         Plotly.newPlot('chart', [trace1, trace2, trace3], layout, {responsive: true});
+
+        // Update chart when system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            location.reload();
+        });
     </script>
 </body>
 </html>
