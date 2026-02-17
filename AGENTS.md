@@ -73,7 +73,7 @@ If `docker build` fails:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CRON_SCHEDULE` | `*/30 * * * *` | Speedtest frequency |
+| `CRON_SCHEDULE` | `0 */5 * * *` | Speedtest frequency (every 5 hours) |
 | `HOME` | `/tmp` | Required for non-root operation |
 | `DATA_FILE` | `/data/speedtest.csv` | CSV data location |
 | `HTML_FILE` | `/app/html/index.html` | Generated HTML location |

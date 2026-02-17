@@ -9,6 +9,6 @@ services:
     volumes:
       - ./data:/data
     environment:
-      - CRON_SCHEDULE=${CRON_SCHEDULE:-*/30 * * * *}
+      - CRON_SCHEDULE=${CRON_SCHEDULE:-0 */5 * * *}
       - HOME=/tmp
     restart: unless-stopped

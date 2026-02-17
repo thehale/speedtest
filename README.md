@@ -25,7 +25,7 @@ docker run -d \
   --name speedtest \
   -p 8080:8080 \
   -v $(pwd)/data:/data \
-  -e CRON_SCHEDULE="*/30 * * * *" \
+  -e CRON_SCHEDULE="0 */5 * * *" \
   --restart unless-stopped \
   speedtest
 ```
@@ -34,12 +34,12 @@ docker run -d \
 
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
-| `CRON_SCHEDULE` | `*/30 * * * *` | Cron expression for test frequency |
+| `CRON_SCHEDULE` | `0 */5 * * *` | Cron expression for test frequency |
 
 ### Cron Schedule Examples
 
-- Every 15 minutes: `*/15 * * * *`
 - Every hour: `0 * * * *`
+- Every 5 hours: `0 */5 * * *`
 - Every 6 hours: `0 */6 * * *`
 - Daily at midnight: `0 0 * * *`
 
