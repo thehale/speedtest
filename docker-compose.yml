@@ -10,5 +10,5 @@ services:
       - ./data:/data
     environment:
       - CRON_SCHEDULE=${CRON_SCHEDULE:-*/30 * * * *}
-      - HOME=/home/speedtest
+      - HOME=/tmp
     restart: unless-stopped

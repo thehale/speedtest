@@ -1,5 +1,8 @@
 FROM nginxinc/nginx-unprivileged:alpine-slim
 
+# Switch to root for package installation
+USER root
+
 # Install required packages
 RUN apk add --no-cache \
     curl \
@@ -18,8 +21,8 @@ RUN ARCH=$(uname -m) && \
     fi && \
     chmod +x /usr/local/bin/speedtest
 
-# Set HOME environment variable for use in subsequent commands
-ENV HOME=/home/speedtest
+# Set HOME to /tmp for the nginx user (nginx-unprivileged runs as uid 101)
+ENV HOME=/tmp
 
 # Create directories with wide permissions for any UID
 RUN mkdir -p /data /app/html $HOME/.config/ookla && \
@@ -36,8 +39,9 @@ COPY entrypoint.sh /app/
 RUN chmod +x /app/*.sh && chmod 777 /app
 
 # Configure nginx to serve from our html directory
-USER root
 RUN sed -i 's|root   /usr/share/nginx/html|root   /app/html|g' /etc/nginx/conf.d/default.conf
+
+# Switch back to non-root user for runtime
 USER nginx
 
 # Environment variables with defaults
