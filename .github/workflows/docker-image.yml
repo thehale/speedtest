@@ -18,14 +18,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
-    - name: Get the tag
-      id: get_tag
-      run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      
+        
     - name: Login to DockerHub
       run: echo -n "$DOCKER_ACCESS_TOKEN" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
         
@@ -33,4 +26,4 @@ jobs:
       run: echo -n "${{ secrets.GITHUB_TOKEN }}" | docker login "$GITHUB_CONTAINER_REGISTRY" -u "${{ github.actor }}" --password-stdin
         
     - name: Run publish script
-      run: ./bin/publish.sh ${{ steps.get_tag.outputs.TAG }}
+      run: ./bin/publish.sh
