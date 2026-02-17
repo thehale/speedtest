@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine-slim
+FROM nginxinc/nginx-unprivileged:alpine-slim
 
 # Install required packages
 RUN apk add --no-cache \
@@ -35,25 +35,17 @@ COPY generate_html.sh /app/
 COPY entrypoint.sh /app/
 RUN chmod +x /app/*.sh && chmod 777 /app
 
-# Create nginx config that works with non-root user
-RUN mkdir -p /tmp/nginx && chmod 777 /tmp/nginx && \
-    sed -i 's/listen       80;/listen       8080;/g' /etc/nginx/conf.d/default.conf && \
-    sed -i 's/listen  \[::\]:80;/listen  [::]:8080;/g' /etc/nginx/conf.d/default.conf && \
-    sed -i 's/user nginx;/# user nginx;/g' /etc/nginx/nginx.conf && \
-    sed -i '/pid/d' /etc/nginx/nginx.conf && \
-    sed -i 's|root   /usr/share/nginx/html|root   /app/html|g' /etc/nginx/conf.d/default.conf && \
-    echo 'client_body_temp_path /tmp/nginx/client_temp;' >> /etc/nginx/nginx.conf && \
-    echo 'proxy_temp_path /tmp/nginx/proxy_temp;' >> /etc/nginx/nginx.conf && \
-    echo 'fastcgi_temp_path /tmp/nginx/fastcgi_temp;' >> /etc/nginx/nginx.conf && \
-    echo 'uwsgi_temp_path /tmp/nginx/uwsgi_temp;' >> /etc/nginx/nginx.conf && \
-    echo 'scgi_temp_path /tmp/nginx/scgi_temp;' >> /etc/nginx/nginx.conf
+# Configure nginx to serve from our html directory
+USER root
+RUN sed -i 's|root   /usr/share/nginx/html|root   /app/html|g' /etc/nginx/conf.d/default.conf
+USER nginx
 
 # Environment variables with defaults
 ENV CRON_SCHEDULE="*/30 * * * *"
 ENV DATA_FILE="/data/speedtest.csv"
 ENV HTML_FILE="/app/html/index.html"
 
-# Expose web port
+# Expose web port (nginx-unprivileged uses 8080 by default)
 EXPOSE 8080
 
 # Volume for persistent data
