@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  speedtest:
+    build: .
+    container_name: speedtest
+    ports:
+      - "${HTTP_PORT:-8080}:${HTTP_PORT:-8080}"
+    volumes:
+      - ./data:/data
+    environment:
+      - CRON_SCHEDULE=${CRON_SCHEDULE:-*/30 * * * *}
+      - HTTP_PORT=${HTTP_PORT:-8080}
+      - DATA_FILE=/data/speedtest.csv
+    restart: unless-stopped
