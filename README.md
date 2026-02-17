@@ -1,6 +1,6 @@
 # Speedtest Docker
 
-A lightweight Docker container (~25MB) that runs Ookla Speedtest on a configurable cron schedule and serves interactive graphs via nginx.
+A lightweight Docker container (~25MB) that runs [Ookla Speedtest](https://www.speedtest.net/apps/cli) on a configurable cron schedule and serves interactive graphs via http.
 
 ## Quick Start
 
@@ -43,6 +43,8 @@ docker run -d \
 - Every 6 hours: `0 */6 * * *`
 - Daily at midnight: `0 0 * * *`
 
+You may find [crontab.guru](https://crontab.guru/) a helpful resource for building cron expressions.
+
 ## Data Persistence
 
 The CSV file containing all speedtest results is stored at `/data/speedtest.csv` inside the container. Mount a volume to persist data:
@@ -60,11 +62,11 @@ docker build -t speedtest .
 ## Architecture
 
 - **Base image**: `nginxinc/nginx-unprivileged:alpine-slim` (~20MB)
-- **Speedtest**: Ookla's official CLI
+- **Speedtest**: [Ookla's official CLI](https://www.speedtest.net/apps/cli)
 - **Scheduling**: dcron (cron daemon)
 - **Graphs**: Plotly.js (loaded from CDN) renders CSV data client-side
 - **Security**: Runs as non-root user by default
-- **Image size**: ~35MB total (vs 648MB for Python-based image)
+- **Image size**: ~35MB total
 
 ## Viewing Logs
 
@@ -75,3 +77,7 @@ docker-compose logs -f
 # Docker
 docker logs -f speedtest
 ```
+
+## License
+
+This project is licensed under the Mozilla Public License 2.0 (MPL-2.0).
