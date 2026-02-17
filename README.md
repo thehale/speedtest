@@ -1,35 +1,22 @@
 # Speedtest Docker
 
-A simple Docker container that runs Ookla Speedtest on a configurable cron schedule and serves graphs of historical results via HTTP.
-
-## Features
-
-- Runs Ookla Speedtest CLI on a configurable cron schedule
-- Serves interactive graphs via Flask web server
-- Persists historical data to a CSV file
-- Simple configuration via environment variables
+A lightweight Docker container (~25MB) that runs Ookla Speedtest on a configurable cron schedule and serves interactive graphs via nginx.
 
 ## Quick Start
 
-### Using Docker Compose (Recommended)
+### Using Docker Compose
 
 1. Copy the example environment file:
    ```bash
    cp .env.example .env
    ```
 
-2. Edit `.env` to configure your settings:
-   ```
-   CRON_SCHEDULE=*/30 * * * *  # Every 30 minutes
-   HTTP_PORT=8080
-   ```
-
-3. Start the container:
+2. Start the container:
    ```bash
    docker-compose up -d
    ```
 
-4. Access the dashboard at http://localhost:8080
+3. Access the dashboard at http://localhost:8080
 
 ### Using Docker Run
 
@@ -39,7 +26,6 @@ docker run -d \
   -p 8080:8080 \
   -v $(pwd)/data:/data \
   -e CRON_SCHEDULE="*/30 * * * *" \
-  -e HTTP_PORT=8080 \
   --restart unless-stopped \
   speedtest
 ```
@@ -49,8 +35,6 @@ docker run -d \
 | Environment Variable | Default | Description |
 |---------------------|---------|-------------|
 | `CRON_SCHEDULE` | `*/30 * * * *` | Cron expression for test frequency |
-| `HTTP_PORT` | `8080` | Port for the web dashboard |
-| `DATA_FILE` | `/data/speedtest.csv` | Path to the CSV data file |
 
 ### Cron Schedule Examples
 
@@ -72,6 +56,14 @@ The CSV file containing all speedtest results is stored at `/data/speedtest.csv`
 ```bash
 docker build -t speedtest .
 ```
+
+## Architecture
+
+- **Base image**: `nginx:stable-alpine-slim` (~12MB)
+- **Speedtest**: Ookla's official CLI
+- **Scheduling**: dcron (cron daemon)
+- **Graphs**: Plotly.js (loaded from CDN) renders CSV data client-side
+- **Image size**: ~25MB total (vs 648MB for Python-based image)
 
 ## Viewing Logs
 
