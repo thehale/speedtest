@@ -84,9 +84,13 @@ cat > "$HTML_FILE" << EOF
         .container { max-width: 1200px; margin: 0 auto; background: light-dark(white, #2a2a2a); padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px light-dark(rgba(0,0,0,0.1), rgba(0,0,0,0.3)); }
         h1 { color: light-dark(#333, #e0e0e0); }
         .stats { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-box { background: light-dark(#f0f0f0, #3a3a3a); padding: 15px; border-radius: 5px; flex: 1; min-width: 150px; }
-        .stat-label { font-size: 12px; color: light-dark(#666, #999); }
-        .stat-value { font-size: 24px; font-weight: bold; color: light-dark(#333, #f0f0f0); }
+        .stat-box { padding: 15px; border-radius: 5px; flex: 1; min-width: 150px; color: white; }
+        .stat-box.count { background: light-dark(#6c757d, #495057); }
+        .stat-box.download { background: light-dark(#28a745, #2d8a3e); }
+        .stat-box.upload { background: light-dark(#007bff, #0069d9); }
+        .stat-box.ping { background: light-dark(#dc3545, #c82333); }
+        .stat-label { font-size: 12px; opacity: 0.9; }
+        .stat-value { font-size: 24px; font-weight: bold; }
         #chart { width: 100%; height: 500px; }
     </style>
 </head>
@@ -94,19 +98,19 @@ cat > "$HTML_FILE" << EOF
     <div class="container">
         <h1>Speedtest Results</h1>
         <div class="stats">
-            <div class="stat-box">
+            <div class="stat-box count">
                 <div class="stat-label">Tests Run</div>
                 <div class="stat-value">$count</div>
             </div>
-            <div class="stat-box">
+            <div class="stat-box download">
                 <div class="stat-label">Avg Download</div>
                 <div class="stat-value">${avg_download} Mbps</div>
             </div>
-            <div class="stat-box">
+            <div class="stat-box upload">
                 <div class="stat-label">Avg Upload</div>
                 <div class="stat-value">${avg_upload} Mbps</div>
             </div>
-            <div class="stat-box">
+            <div class="stat-box ping">
                 <div class="stat-label">Avg Ping</div>
                 <div class="stat-value">${avg_ping} ms</div>
             </div>
@@ -169,8 +173,7 @@ $data_js
             yaxis: { title: { text: 'Speed (Mbps)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, side: 'left' },
             yaxis2: { title: { text: 'Ping (ms)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, overlaying: 'y', side: 'right' },
             hovermode: 'x unified',
-            showlegend: true,
-            legend: { x: 0, y: 1.1, orientation: 'h', font: { color: isDark ? '#e0e0e0' : '#333' } }
+            showlegend: false
         };
 
         Plotly.newPlot('chart', [trace1, trace2, trace3], layout, {responsive: true});
