@@ -6,7 +6,7 @@ on:
       - '*'
 
 env:
-  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOCKER_REGISTRY: docker.io
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
   GITHUB_CONTAINER_REGISTRY: ghcr.io
@@ -26,35 +26,11 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+    - name: Login to DockerHub
+      run: echo -n "$DOCKER_ACCESS_TOKEN" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
         
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      run: echo -n "${{ secrets.GITHUB_TOKEN }}" | docker login "$GITHUB_CONTAINER_REGISTRY" -u "${{ github.actor }}" --password-stdin
         
-    - name: Build and push Docker image
-      run: |
-        # Build image with version tag
-        docker build -t thehale/speedtest:${{ steps.get_tag.outputs.TAG }} .
-        
-        # Tag as latest
-        docker tag thehale/speedtest:${{ steps.get_tag.outputs.TAG }} thehale/speedtest:latest
-        
-        # Tag for GitHub Container Registry
-        docker tag thehale/speedtest:${{ steps.get_tag.outputs.TAG }} ghcr.io/thehale/speedtest:${{ steps.get_tag.outputs.TAG }}
-        docker tag thehale/speedtest:latest ghcr.io/thehale/speedtest:latest
-        
-        # Push to Docker Hub
-        docker push thehale/speedtest:${{ steps.get_tag.outputs.TAG }}
-        docker push thehale/speedtest:latest
-        
-        # Push to GitHub Container Registry
-        docker push ghcr.io/thehale/speedtest:${{ steps.get_tag.outputs.TAG }}
-        docker push ghcr.io/thehale/speedtest:latest
+    - name: Run publish script
+      run: ./bin/publish.sh ${{ steps.get_tag.outputs.TAG }}

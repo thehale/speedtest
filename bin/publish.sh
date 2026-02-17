@@ -35,12 +35,14 @@ echo "Docker Hub: $DOCKER_HUB_REPO"
 echo "GitHub Registry: $GITHUB_REGISTRY/$GITHUB_REPO"
 echo ""
 
-# Verify we're logged in
-echo "Checking Docker Hub login..."
-if ! docker info | grep -q "Username"; then
-    echo "Error: Not logged in to Docker Hub"
-    echo "Please run: docker login"
-    exit 1
+# Verify we're logged in (skip check in CI environments)
+if [ -z "$CI" ]; then
+    echo "Checking Docker Hub login..."
+    if ! docker info 2>/dev/null | grep -q "Username"; then
+        echo "Error: Not logged in to Docker Hub"
+        echo "Please run: docker login"
+        exit 1
+    fi
 fi
 
 # Build the image
