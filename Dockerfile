@@ -18,13 +18,16 @@ RUN ARCH=$(uname -m) && \
     fi && \
     chmod +x /usr/local/bin/speedtest
 
+# Set HOME environment variable for use in subsequent commands
+ENV HOME=/tmp
+
 # Create directories with wide permissions for any UID
-RUN mkdir -p /data /app /tmp/.config/ookla && \
-    chmod 777 /data /tmp && \
-    chmod -R 777 /tmp/.config
+RUN mkdir -p /data /app $HOME/.config/ookla && \
+    chmod 777 /data $HOME && \
+    chmod -R 777 $HOME/.config
 
 # Accept license automatically (will be copied to user's home at runtime)
-RUN echo '{"Settings": {"LicenseAccepted": "604ec14274326065ea260afd5035643b"}}' > /tmp/speedtest-cli.json
+RUN echo '{"Settings": {"LicenseAccepted": "604ec14274326065ea260afd5035643b"}}' > $HOME/speedtest-cli.json
 
 # Copy application files
 COPY speedtest_runner.sh /app/
@@ -42,7 +45,6 @@ RUN sed -i 's/listen       80;/listen       8080;/g' /etc/nginx/conf.d/default.c
 ENV CRON_SCHEDULE="*/30 * * * *"
 ENV DATA_FILE="/data/speedtest.csv"
 ENV HTML_FILE="/usr/share/nginx/html/index.html"
-ENV HOME=/tmp
 
 # Expose web port
 EXPOSE 8080
