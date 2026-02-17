@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   speedtest:
     build: .
@@ -10,5 +8,4 @@ services:
       - ./data:/data
     environment:
       - CRON_SCHEDULE=${CRON_SCHEDULE:-0 */5 * * *}
-      - HOME=/tmp
     restart: unless-stopped

@@ -41,12 +41,13 @@ Access the dashboard at http://localhost:8080
 ### Using Docker Run
 
 ```bash
-docker run -d \
+docker run \
+  --detach \
   --name speedtest \
-  -p 8080:8080 \
-  -v $(pwd)/data:/data \
-  -e CRON_SCHEDULE="0 */5 * * *" \
-  -e HOME=/tmp \
+  --publish 8080:8080 \
+  --volume $(pwd)/data:/data \
+  --env CRON_SCHEDULE="0 */5 * * *" \
+  --env HOME=/tmp \
   --restart unless-stopped \
   thehale/speedtest:latest
 ```
@@ -83,7 +84,7 @@ Images are published to both Docker Hub and GitHub Container Registry:
 
 Available tags:
 - `latest` - Most recent stable release
-- `v1.0.0`, `v1.1.0`, etc. - Specific version tags
+- `1.0.0`, `1.1.0`, etc. - Specific version tags
 
 ## Building from Source
 
