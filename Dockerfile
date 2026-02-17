@@ -22,8 +22,8 @@ RUN ARCH=$(uname -m) && \
 ENV HOME=/home/speedtest
 
 # Create directories with wide permissions for any UID
-RUN mkdir -p /data /app $HOME/.config/ookla && \
-    chmod 777 /data $HOME && \
+RUN mkdir -p /data /app/html $HOME/.config/ookla && \
+    chmod 777 /data $HOME /app/html && \
     chmod -R 777 $HOME/.config
 
 # Accept license automatically (will be copied to user's home at runtime)
@@ -39,12 +39,13 @@ RUN chmod +x /app/*.sh && chmod 777 /app
 RUN sed -i 's/listen       80;/listen       8080;/g' /etc/nginx/conf.d/default.conf && \
     sed -i 's/listen  \[::\]:80;/listen  [::]:8080;/g' /etc/nginx/conf.d/default.conf && \
     sed -i 's/user nginx;/# user nginx;/g' /etc/nginx/nginx.conf && \
-    sed -i '/pid/d' /etc/nginx/nginx.conf
+    sed -i '/pid/d' /etc/nginx/nginx.conf && \
+    sed -i 's|root   /usr/share/nginx/html|root   /app/html|g' /etc/nginx/conf.d/default.conf
 
 # Environment variables with defaults
 ENV CRON_SCHEDULE="*/30 * * * *"
 ENV DATA_FILE="/data/speedtest.csv"
-ENV HTML_FILE="/usr/share/nginx/html/index.html"
+ENV HTML_FILE="/app/html/index.html"
 
 # Expose web port
 EXPOSE 8080
