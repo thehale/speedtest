@@ -19,7 +19,7 @@ RUN ARCH=$(uname -m) && \
     chmod +x /usr/local/bin/speedtest
 
 # Set HOME environment variable for use in subsequent commands
-ENV HOME=/tmp
+ENV HOME=/home/speedtest
 
 # Create directories with wide permissions for any UID
 RUN mkdir -p /data /app $HOME/.config/ookla && \
