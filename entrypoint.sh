@@ -4,7 +4,7 @@ set -e
 # Setup home directory for current user
 export HOME=${HOME:-/tmp}
 mkdir -p "$HOME/.config/ookla"
-cp "$HOME/speedtest-cli.json" "$HOME/.config/ookla/" 2>/dev/null || cp /tmp/speedtest-cli.json "$HOME/.config/ookla/"
+cp "$HOME/speedtest-cli.json" "$HOME/.config/ookla/"
 
 # Setup cron job
 CRON_SCHEDULE="${CRON_SCHEDULE:-*/30 * * * *}"
