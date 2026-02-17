@@ -14,7 +14,9 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    
+    permissions:
+      packages: write
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -23,7 +25,9 @@ jobs:
       run: echo -n "$DOCKER_ACCESS_TOKEN" | docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" --password-stdin
         
     - name: Login to GitHub Container Registry
-      run: echo -n "${{ secrets.GITHUB_TOKEN }}" | docker login "$GITHUB_CONTAINER_REGISTRY" -u "${{ github.actor }}" --password-stdin
+      run: echo -n "$GITHUB_TOKEN" | docker login "$GITHUB_CONTAINER_REGISTRY" -u "${{ github.actor }}" --password-stdin
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Run publish script
       run: ./bin/publish.sh
