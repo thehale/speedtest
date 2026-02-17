@@ -9,8 +9,15 @@ RUN apk add --no-cache \
     bash \
     jq \
     coreutils \
-    bc \
-    dcron
+    bc
+
+# Install Supercronic (cron for containers)
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.43/supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=f97b92132b61a8f827c3faf67106dc0e4467ccf2
+RUN curl -fsSLO "$SUPERCRONIC_URL" \
+    && echo "${SUPERCRONIC_SHA1SUM}  supercronic-linux-amd64" | sha1sum -c - \
+    && chmod +x supercronic-linux-amd64 \
+    && mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
 # Install Ookla Speedtest CLI
 RUN ARCH=$(uname -m) && \
