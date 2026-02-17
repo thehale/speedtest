@@ -1,22 +1,42 @@
 # Speedtest Docker
 
-A lightweight Docker container (~25MB) that runs [Ookla Speedtest](https://www.speedtest.net/apps/cli) on a configurable cron schedule and serves interactive graphs via http.
+A lightweight Docker container (~35MB) that runs [Ookla Speedtest](https://www.speedtest.net/apps/cli) on a configurable cron schedule and serves interactive graphs via http.
+
+[![](https://badgen.net/docker/pulls/thehale/speedtest)](https://hub.docker.com/r/thehale/speedtest)
+[![](https://badgen.net/github/license/thehale/speedtest)](https://github.com/thehale/speedtest/blob/master/LICENSE)
+[![](https://badgen.net/badge/icon/Sponsor/pink?icon=github&label)](https://github.com/sponsors/thehale)
+[![Joseph Hale's software engineering blog](https://jhale.dev/badges/website.svg)](https://jhale.dev)
+[![](https://jhale.dev/badges/follow.svg)](https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=thehale)
+
 
 ## Quick Start
 
 ### Using Docker Compose
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+Create a `docker-compose.yml` file:
 
-2. Start the container:
-   ```bash
-   docker-compose up -d
-   ```
+```yaml
+services:
+  speedtest:
+    image: thehale/speedtest:latest
+    container_name: speedtest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - CRON_SCHEDULE=0 */5 * * *
+      - HOME=/tmp
+    restart: unless-stopped
+```
 
-3. Access the dashboard at http://localhost:8080
+Then run:
+
+```bash
+docker-compose up --detach
+```
+
+Access the dashboard at http://localhost:8080
 
 ### Using Docker Run
 
@@ -26,8 +46,9 @@ docker run -d \
   -p 8080:8080 \
   -v $(pwd)/data:/data \
   -e CRON_SCHEDULE="0 */5 * * *" \
+  -e HOME=/tmp \
   --restart unless-stopped \
-  speedtest
+  thehale/speedtest:latest
 ```
 
 ## Configuration
@@ -53,7 +74,18 @@ The CSV file containing all speedtest results is stored at `/data/speedtest.csv`
 -v /path/to/data:/data
 ```
 
-## Building
+## Available Images
+
+Images are published to both Docker Hub and GitHub Container Registry:
+
+- **Docker Hub**: `docker.io/thehale/speedtest`
+- **GitHub**: `ghcr.io/thehale/speedtest`
+
+Available tags:
+- `latest` - Most recent stable release
+- `v1.0.0`, `v1.1.0`, etc. - Specific version tags
+
+## Building from Source
 
 ```bash
 docker build -t speedtest .
