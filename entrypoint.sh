@@ -11,6 +11,9 @@ echo "$CRON_SCHEDULE /app/speedtest_runner.sh >> /var/log/speedtest.log 2>&1" > 
 # Create log file
 touch /var/log/speedtest.log
 
+# Generate initial HTML page (before nginx starts)
+/app/generate_html.sh
+
 # Start nginx
 nginx
 
