@@ -4,9 +4,15 @@ set -e
 DATA_FILE="${DATA_FILE:-/data/speedtest.csv}"
 HTML_FILE="${HTML_FILE:-/usr/share/nginx/html/index.html}"
 
+FOOTER_HTML='    <footer style="text-align: center; margin-top: 20px; font-size: 12px; color: light-dark(#666, #999);">
+        <a href="https://github.com/thehale/speedtest" style="color: inherit;">github.com/thehale/speedtest</a>
+        &nbsp;|&nbsp;
+        <a href="https://github.com/sponsors/thehale"><img src="https://badgen.net/badge/icon/Sponsor/pink?icon=github&label" alt="Sponsor" style="vertical-align: middle;"></a>
+    </footer>'
+
 # If no data exists yet, create a placeholder
 if [ ! -f "$DATA_FILE" ] || [ ! -s "$DATA_FILE" ]; then
-    cat > "$HTML_FILE" << 'EOF'
+    cat > "$HTML_FILE" << EOF
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,6 +35,7 @@ if [ ! -f "$DATA_FILE" ] || [ ! -s "$DATA_FILE" ]; then
         <h1>Speedtest Results</h1>
         <p>No data available yet. Please wait for the first speedtest to complete.</p>
     </div>
+$FOOTER_HTML
 </body>
 </html>
 EOF
@@ -117,6 +124,7 @@ cat > "$HTML_FILE" << EOF
         </div>
         <div id="chart"></div>
     </div>
+$FOOTER_HTML
     
     <script>
 $data_js
