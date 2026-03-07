@@ -91,7 +91,8 @@ cat > "$HTML_FILE" << EOF
         .stat-box.ping { background: light-dark(#dc3545, #c82333); }
         .stat-label { font-size: 12px; opacity: 0.9; }
         .stat-value { font-size: 24px; font-weight: bold; }
-        #chart { width: 100%; height: 500px; }
+        #bandwidth-chart { width: 100%; height: 400px; }
+        #ping-chart { width: 100%; height: 300px; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -115,7 +116,8 @@ cat > "$HTML_FILE" << EOF
                 <div class="stat-value">${avg_ping} ms</div>
             </div>
         </div>
-        <div id="chart"></div>
+        <div id="bandwidth-chart"></div>
+        <div id="ping-chart"></div>
     </div>
     
     <script>
@@ -153,7 +155,6 @@ $data_js
             name: 'Ping (ms)',
             type: 'scatter',
             mode: 'lines+markers',
-            yaxis: 'y2',
             line: { color: 'red', width: 2 },
             marker: { size: 6 }
         };
@@ -171,12 +172,27 @@ $data_js
             font: { color: isDark ? '#e0e0e0' : '#333' },
             xaxis: { title: { text: 'Time', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' } },
             yaxis: { title: { text: 'Speed (Mbps)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, side: 'left' },
-            yaxis2: { title: { text: 'Ping (ms)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' }, overlaying: 'y', side: 'right' },
             hovermode: 'x unified',
             showlegend: false
         };
 
-        Plotly.newPlot('chart', [trace1, trace2, trace3], layout, {responsive: true});
+        Plotly.newPlot('bandwidth-chart', [trace1, trace2], layout, {responsive: true});
+
+        const pingLayout = {
+            title: {
+                text: 'Ping Over Time',
+                font: { color: isDark ? '#e0e0e0' : '#333' }
+            },
+            paper_bgcolor: isDark ? '#2a2a2a' : 'white',
+            plot_bgcolor: isDark ? '#2a2a2a' : 'white',
+            font: { color: isDark ? '#e0e0e0' : '#333' },
+            xaxis: { title: { text: 'Time', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' } },
+            yaxis: { title: { text: 'Ping (ms)', font: { color: isDark ? '#e0e0e0' : '#333' } }, gridcolor: isDark ? '#444' : '#e0e0e0', tickfont: { color: isDark ? '#999' : '#666' } },
+            hovermode: 'x unified',
+            showlegend: false
+        };
+
+        Plotly.newPlot('ping-chart', [trace3], pingLayout, {responsive: true});
 
         // Update chart when system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
